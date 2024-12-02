@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
 class GroceryModel extends ChangeNotifier {
+  Box<Map<dynamic, dynamic>> openedCartBox = Hive.box('CartBoxLocal');
+
+  GroceryModel() {
+    loadHivedCartItems();
+  }
+
+  loadHivedCartItems() {
+    cartList = openedCartBox.values
+        .map((item) => Map<String, dynamic>.from(item))
+        .toList();
+    print('came to hived');
+    notifyListeners();
+  }
+
+  saveCartItemsToHiveBox() {
+    openedCartBox.clear();
+    for (int i = 0; i < cartList.length; i++) {
+      openedCartBox.put(i, cartList[i]);
+    }
+  }
+
   List<List<dynamic>> _groceryItems = [
     ['Berries', '\$15', 'berries.png'],
     ['butter', '\$15', 'butter.png'],
@@ -33,21 +56,30 @@ class GroceryModel extends ChangeNotifier {
     } else if (existingItemIndex != -1) {
       cartList[existingItemIndex]['quantity']++;
     }
+    saveCartItemsToHiveBox();
     notifyListeners();
   }
 
   void removeCartItem(index) {
     cartList.removeAt(index);
+    saveCartItemsToHiveBox();
     notifyListeners();
   }
 
   void qtyIncreament(index) {
     cartList[index]['quantity']++;
+    saveCartItemsToHiveBox();
     notifyListeners();
   }
 
   void qtyDecreament(index) {
-    cartList[index]['quantity']--;
+    if (cartList[index]['quantity'] > 1) {
+      cartList[index]['quantity']--;
+    } else {
+      cartList[index]['quantity'] == 1;
+    }
+
+    saveCartItemsToHiveBox();
     notifyListeners();
   }
 

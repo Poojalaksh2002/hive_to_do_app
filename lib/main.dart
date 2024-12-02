@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grocery_app/model/grocery_model.dart';
 import 'package:grocery_app/pages/intro_page.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox<Map<dynamic, dynamic>>('CartBoxLocal');
   runApp(const MyApp());
 }
 
