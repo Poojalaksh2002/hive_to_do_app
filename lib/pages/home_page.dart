@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:grocery_app/model/grocery_model.dart';
 import 'package:grocery_app/pages/cart_page.dart';
+import 'package:grocery_app/pages/settings_page.dart';
 import 'package:grocery_app/utils/grocery_card.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +12,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.teal[100],
+        title: Text(
+          'Lets order fresh items for you',
+          style: GoogleFonts.averiaSansLibre(),
+        ),
+      ),
       body: Consumer<GroceryModel>(builder: (context, value, child) {
         return GridView.builder(
             itemCount: value.groceryItems.length,
@@ -35,12 +43,17 @@ class HomePage extends StatelessWidget {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => HomePage()));
             } else if (index == 1) {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()));
+            } else if (index == 2) {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => CartPage()));
             }
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Settings'),
             BottomNavigationBarItem(
               label: 'Cart',
               icon: Stack(children: [

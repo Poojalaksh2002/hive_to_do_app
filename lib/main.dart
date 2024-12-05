@@ -4,6 +4,8 @@ import 'package:grocery_app/pages/intro_page.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 
+import 'model/theme_provider.dart';
+
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox<Map<dynamic, dynamic>>('CartBoxLocal');
@@ -20,12 +22,20 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => GroceryModel(),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: IntroPage(),
-      ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GroceryModel()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider())
+      ],
+      child: Consumer<ThemeProvider>(builder: (context, value, child) {
+        return MaterialApp(
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: value.currentTheme,
+          debugShowCheckedModeBanner: false,
+          home: IntroPage(),
+        );
+      }),
     );
   }
 }
